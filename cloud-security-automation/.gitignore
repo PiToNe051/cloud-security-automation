@@ -1,0 +1,19 @@
+# .gitignore
+
+# Terraform state files
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate.*
+
+# AWS credentials (if ever accidentally included)
+*.pem
+credentials
+.aws/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE specific
+.vscode/
+.idea/
