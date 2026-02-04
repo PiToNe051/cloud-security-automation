@@ -9,56 +9,56 @@ terraform {
 
 # Configure the AWS Provider (It uses your existing ~/.aws/credentials)
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 # Define SG
 
 resource "aws_security_group" "forensic_isolation" {
-  name        = "FORENSIC-ISOLATION-ZONE"
-  description = "Total lockdown group - No Inbound or Outbout"
-  vpc_id      = "vpc-0aec7117b29d0fcd7"
+  name        = var.forensic_sg_name
+  description = var.forensic_sg_description
+  vpc_id      = var.vpc_id
 }
 
 
 resource "aws_instance" "sentile_twin" {
-  ami           = "ami-0b6c6ebed2801a5cb"
-  instance_type = "t2.micro"
-  key_name      = "Sentinel-Project-Key"
+  ami           = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
  
 
   vpc_security_group_ids = [aws_security_group.forensic_isolation.id]
 
   tags = {
-  Name = "Sentinel-Forensic-Twin"
+  Name = var.sentinel_instance_name
   }  
 } 
 
 # Provisioning Isolated Workstation for Disk Analysis
 
 resource "aws_instance" "forensic_workstation" {
-  ami               = "ami-0b6c6ebed2801a5cb"
-  instance_type     = "t2.micro"
-  availability_zone = "us-east-1a" 
-  key_name          = "Sentinel-Project-Key"
+  ami               = var.ami_id
+  instance_type     = var.instance_type
+  availability_zone = var.availability_zone 
+  key_name          = var.key_name
 
 
   # Attach to existing lockdown group
   vpc_security_group_ids = [aws_security_group.forensic_isolation.id]
 
   tags = {
-    Name = "Forensic-Analyst-Workstation"
+    Name = var.forensic_workstation_name
   }
 }
 
 # 1. Create a physical disk from the forensic snapshot
 resource "aws_ebs_volume" "evidence_disk" {
-  availability_zone = "us-east-1a" 
-  snapshot_id       = "snap-081ac51b83cdf41c2"
-  size              = 8
+  availability_zone = var.availability_zone 
+  snapshot_id       = var.snapshot_id
+  size              = var.size
 
   tags = {
-    Name = "Evidence-Disk-Case-Alpha"
+    Name = var.evidence_disk_name
   }
 }
 
