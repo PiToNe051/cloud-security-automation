@@ -89,7 +89,7 @@ This module provisions core AWS resources for a forensic analysis environment.
     Type `yes` when prompted to confirm.
 
 **Notes on Configuration:**
-The current Terraform configuration uses hardcoded values for region, AMI ID, instance types, key names, VPC ID, availability zone, snapshot ID, and security group ID. For production environments or more general reusability, it's highly recommended to use **Terraform variables**. This would allow users to easily specify these parameters when running the code.
+The current Terraform configuration is fully parameterized using **Terraform variables**. This allows users to easily specify region, VPC ID, AMI ID, instance types, and other parameters via a `terraform.tfvars` file, ensuring reusability and adherence to best practices.
 
 **Example using Variables (for `main.tf` and a `variables.tf` file):**
 
@@ -250,9 +250,9 @@ The current Terraform configuration uses hardcoded values for region, AMI ID, in
 
 ---
 
-### 2. Python Boto3 Instance Launcher (`scripts/boto3/EC2_launchers/`)
+### 2. Python Boto3 Automation Scripts
 
-This script automates the launching of a specific EC2 instance, useful for setting up analysis environments or sentinel nodes.
+These Python Boto3 scripts are fully parameterized using `argparse`, allowing dynamic configuration via command-line arguments for all critical security parameters (Region, VPC ID, Security Group Name/Rules, Instance details). This ensures maximum reusability and production-readiness for all cloud resource management and automation tasks.
 
 **Python Script (`scripts/boto3/EC2_launchers/big_bang_launcher.py`):**
 

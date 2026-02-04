@@ -1,17 +1,29 @@
 import boto3
 from botocore.exceptions import ClientError
+import argparse
 
-ec2 = boto3.client('ec2', region_name='us-east-1')
+def parse_arguments():
+    """Parses command-line arguments for an Isolation Security Group creation."""
+    parser = argparse.ArgumentParser(description='Creates an Isolation Security Group with flexible configuration.')
 
-def create_empty_isolation_sg(vpc_id):
-    group_name = 'ISOLATION-TEST-ZONE'
+    parser.add_argument('--vpc', type=str, default='vpc-0aec7117b29d0fcd7', help='The VPC ID where the SG is created')
+    parser.add_argument('--name', type=str, default='ISOLATION-TEST-ZONE', help='The name of the Security Group (default: ISOLATION-TEST-ZONE)')
+    parser.add_argument('--region', type=str, default='us-east-1', help='The AWS region where the SG is created (default: us-east-1)')
+    parser.add_argument('--description', type=str, default='FORENSIC ISOLATION - NO TRAFFIC', help='The description of the Security Group (default: FORENSIC ISOLATION - NO TRAFFIC)')
+    parser.add_argument('--cidr', type=str, default='0.0.0.0/0', help='The Source IP range (default: 0.0.0.0/0)')
 
+
+
+def create_empty_isolation_sg(vpc_id, sg_name, aws_region, sg_description, source_cidr):
+    """Creates a empty isolation Security Group with no Inbound or Outbound traffic allowed."""
+    ec2 = boto3.client('ec2', region_name=aws_region)
+    group_name = sg_name
     try:
         # 1. Create The Group
         print(f"Creating {group_name}")
         sg = ec2.create_security_group(
             GroupName=group_name,
-            Description='FORENSIC ISOLATION - NO TRAFFIC',
+            Description=sg_description,
             VpcId=vpc_id
         )
         sg_id = sg['GroupId']
@@ -23,7 +35,7 @@ def create_empty_isolation_sg(vpc_id):
             GroupId=sg_id,
             IpPermissions=[{
                 'IpProtocol': '-1',
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}] # All destinations
+                'IpRanges': [{'CidrIp': source_cidr}] # All destinations
             }]
         )
     # NOTE: We do NOT need to revoke Inbound rules. 
@@ -38,4 +50,12 @@ def create_empty_isolation_sg(vpc_id):
         else:
             raise e
         
-create_empty_isolation_sg('vpc-0aec7117b29d0fcd7')
+if __name__ == "__main__":
+    args = parse_arguments()
+    create_empty_isolation_sg(
+        args.vpc,
+        args.name,
+        args.region,
+        args.description,
+        args.cidr
+    )
