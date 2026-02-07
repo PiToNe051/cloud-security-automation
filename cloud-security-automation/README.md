@@ -1,61 +1,20 @@
-# Cloud Security Automation Portfolio
+# Cloud Security Automation
 
-This project demonstrates practical cloud security automation techniques, combining Infrastructure as Code (IaC) with Python scripting to provision and manage cloud resources securely.
+This repository contains a collection of scripts and Terraform configurations designed to automate common cloud security tasks across AWS services like EC2, IAM, and S3. The goal is to provide robust, repeatable, and secure infrastructure management.
 
----
+The automation is implemented using two primary approaches:
+*   **Python with Boto3 SDK:** For programmatic interaction with AWS services, enabling dynamic and complex task execution.
+*   **Terraform:** For Infrastructure as Code (IaC), allowing declarative definition, versioning, and repeatable deployment of cloud resources.
 
-## 📁 Project Structure
+## Project Structure
 
-```
-cloud-security-automation/
-├── .gitignore
-├── README.md
-├── terraform/
-└── scripts/
-    └── boto3/
-        ├── cloud_forensics/
-        ├── EC2/                # Compute & Network Automation
-        │   ├── EC2_launchers/
-        │   ├── Key_Pair/
-        │   └── Security_Groups/
-        └── S3/                 # Storage Security
-            └── s3-locker/
-```
+The repository is organized into top-level directories representing major AWS services or functional areas:
 
----
+-   **`boto3/`**: Contains Python scripts that leverage the Boto3 SDK for AWS interactions.
+    -   `cloud_forensics/`: Scripts specifically for cloud forensic analysis and evidence protection.
+    -   `EC2/`, `IAM/`, `S3/`: Boto3 scripts related to their respective AWS services.
+-   **`EC2/`**: Scripts and Terraform modules for automating EC2 instance management, security groups, key pairs, etc.
+-   **`IAM/`**: Scripts and Terraform modules for managing AWS Identity and Access Management (IAM) resources like roles, policies, and instance profiles.
+-   **`S3/`**: Scripts and Terraform modules for managing AWS S3 buckets, including configurations for security and lifecycle management.
 
-## 🛠️ Modules
-
-### 💻 EC2 Automation (`scripts/boto3/EC2/`)
-Scripts for launching secure instances, managing key pairs, and configuring firewalls.
-*   [View EC2 Documentation](scripts/boto3/EC2/README.md)
-
-### 🪣 S3 Security (`scripts/boto3/S3/`)
-Tools for creating secure, compliant storage for forensic evidence.
-*   [View S3 Documentation](scripts/boto3/S3/README.md)
-
----
-
-## 🚀 Deployment Instructions
-
-### 1. Terraform Infrastructure
-Navigate to `terraform/` and run:
-```bash
-terraform init
-terraform apply
-```
-
-### 2. Python Automation
-Navigate to the specific module folder.
-
-**Example: Launch a Sentinel Node**
-```bash
-cd scripts/boto3/EC2/EC2_launchers
-python3 big_bang_launcher.py
-```
-
-**Example: Create an Evidence Locker**
-```bash
-cd scripts/boto3/S3/s3-locker
-python3 s3_locker_creator.py forensic-case-001
-```
+Each subdirectory may contain its own README.md for more specific details.
